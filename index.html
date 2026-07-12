@@ -1513,7 +1513,7 @@ sh_boxer: {
 
             const mainLabel = document.createElement('div');
             mainLabel.className = 'section-label';
-            mainLabel.textContent = t('MAIN PRODUCTS OF NYPADROX MALAWI (LILONGWE) ', '🛒 ZOGULITSA ZA NYPADROX COMPANY MALAWI (LILONGWE)');
+            mainLabel.textContent = t('🛒MAIN PRODUCTS OF NYPADROX MALAWI (LILONGWE) ', '🛒 ZOGULITSA ZA NYPADROX COMPANY MALAWI (LILONGWE)');
             row.appendChild(mainLabel);
             for (let [id, prod] of Object.entries(inventory)) {
                 if (prod.category === 'main') row.appendChild(buildCard(id, prod));
