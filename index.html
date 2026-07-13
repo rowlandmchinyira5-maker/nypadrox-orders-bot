@@ -1937,7 +1937,7 @@ sh_boxer: {
                     document.getElementById('resetNewPassword').value = '';
                     document.getElementById('loginDefaultView').style.display = 'block';
                     document.getElementById('loginResetView').style.display = 'none';
-                    document.getElementById('loginPanelTitle').textContent = '🔐 Welcome to NyPadrox';
+                    document.getElementById('loginPanelTitle').textContent = ' Welcome to NyPadrox';
                     delete resetCodes[username];
                 } else {
                     alert(t("Invalid code or expired. Please request a new code.", "Code yolakwika kapena yatha. Pemphetsaninso."));
@@ -2031,8 +2031,12 @@ sh_boxer: {
                     }
                 } else if (lower === 'help') {
                     await typeBotMessage(
-                        t("Commands: menu, products, cart, checkout, reset chat. + button to attach payment evidence. Products are fixed in the code – the owner edits the inventory directly in the HTML. Registered and second-hand products now use real PNG placeholders from picsum.photos.",
-                            "Malamulo: menu, products, cart, checkout, reset chat. Batani + kuti mumate umboni. Zogulitsa zili mu code – mwini amasintha mu HTML. Zogulitsa za registered ndi second hand tsopano zikugwiritsa ntchito zithunzi za PNG zenizeni kuchokera ku picsum.photos."
+                        t("Available Commands: menu, products, cart, checkout, help, reset chat.
+Tap the + button to attach your payment proof.
+Products are added to the Products section by the NyPadrox Support Team.
+Browse a wide range of new and second-hand products on the NyPadrox app.
+Register your business on the NyPadrox app to attract more customers and grow your business beyond WhatsApp and Facebook.",
+                            "Malamulo: menu, products, cart, checkout, reset chat. Batani + kuti mumate umboni. Zogulitsa zimaikidwa mundandanda wa zogulitsa ndi NyPadrox support team. Zogulitsa za registered ndi second hand tsopano zikupezeka pa NyPadrox app.Pangani legisita bizinesi yanu kuti mukhale ndi ma customer asopano posadalira WhatsApp ndi Facebook."
                         ));
                 } else if (lower === 'reset chat') {
                     setUserCart([]);
@@ -2094,7 +2098,7 @@ sh_boxer: {
                 const messagesDiv = document.getElementById('chatMessages');
                 messagesDiv.innerHTML = '';
                 renderProductGrid();
-                typeBotMessage(t("Session reset. Type 'menu'.", "Sessions yabwezeretsedwa. Lembani 'menu'."));
+                typeBotMessage(t("Session reset. Type 'menu'to see products.", "Sessions yabwezeretsedwa. Lembani 'menu'kuti muwone zogulitsa."));
             } catch (err) {
                 console.warn('Reset error:', err);
             }
