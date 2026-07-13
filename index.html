@@ -1995,7 +1995,7 @@ sh_boxer: {
             }
         });
 
-        // ===== BOT RESPONSE =====
+         // ===== BOT RESPONSE =====
         async function botResponse(userText) {
             if (waitingBot || isTyping) return;
             waitingBot = true;
@@ -2031,8 +2031,8 @@ sh_boxer: {
                     }
                 } else if (lower === 'help') {
                     await typeBotMessage(
-                        t(" ",
-                            "Malamulo: menu, products, cart, checkout, reset chat. Batani + kuti mumate umboni. Zogulitsa zimaikidwa mundandanda wa zogulitsa ndi NyPadrox support team. Zogulitsa za registered ndi second hand tsopano zikupezeka pa NyPadrox app.Pangani legisita bizinesi yanu kuti mukhale ndi ma customer asopano posadalira WhatsApp ndi Facebook."
+                        t("Commands: menu, products, cart, checkout, reset chat. + button to attach payment evidence.Products are added to the Products section by the NyPadrox Support Team.Browse a wide range of new and second-hand products on the NyPadrox app.Register your business on the NyPadrox app to attract more customers and grow your business beyond WhatsApp and Facebook. ",
+                            "Malamulo: menu, products, cart, checkout, reset chat. Batani + kuti mumate umboni. Zogulitsa za registered ndi second hand tsopano zikupezeka pa NyPadrox app."
                         ));
                 } else if (lower === 'reset chat') {
                     setUserCart([]);
@@ -2094,7 +2094,7 @@ sh_boxer: {
                 const messagesDiv = document.getElementById('chatMessages');
                 messagesDiv.innerHTML = '';
                 renderProductGrid();
-                typeBotMessage(t("Session reset. Type 'menu'to see products.", "Sessions yabwezeretsedwa. Lembani 'menu'kuti muwone zogulitsa."));
+                typeBotMessage(t("Session reset. Type 'menu'.", "Sessions yabwezeretsedwa. Lembani 'menu'."));
             } catch (err) {
                 console.warn('Reset error:', err);
             }
@@ -2244,7 +2244,7 @@ sh_boxer: {
   const manifest = {
     name: "NyPadrox",
     short_name: "NyPadrox",
-    description: "Bot that helps  you to access and order new and secondhand products  easly",
+    description: "Bot that helps to you to order product  easly",
     start_url: "/",
     display: "standalone",
     background_color: "#f5f7fa",
