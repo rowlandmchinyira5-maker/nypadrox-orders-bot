@@ -1090,9 +1090,9 @@
                     area: "Lilongwe, Malawi"
                 },
                 maize: {
-                    nameEn: "Maize / Chimanga",
-                    nameCh: "Chimanga",
-                    price: 130000,
+                    nameEn: "Maize  50kg/ Chimanga 50k",
+                    nameCh: "Chimanga 50kg",
+                    price: 37000,
                     stock: 10000,
                     img: ROWLAND_IMAGES.maize,
                     category: "main",
@@ -1101,8 +1101,8 @@
                     area: "Lilongwe, Malawi"
                 },
                 laptop: {
-                    nameEn: "Laptop / Desktop",
-                    nameCh: "Laptop / Desktop",
+                    nameEn: "Gaming Desktop",
+                    nameCh: "Gaming Desktop",
                     price: 500000 ,
                     stock: 10000,
                     img: ROWLAND_IMAGES.laptop,
@@ -1149,8 +1149,8 @@
                 },
 
                 mteza: {
-                    nameEn: " Gnuts /  mteza",
-                    nameCh: "mteza",
+                    nameEn: " Gnuts /  mteza 50kg",
+                    nameCh: "mteza 50kg",
                     price: 250000,
                     stock: 10000,
                     img: ROWLAND_IMAGES.mteza,
@@ -1179,7 +1179,7 @@
                 reg_kawunjika: {
                     nameEn: "Bra ",
                     nameCh: "mabla",
-                    price: 16000,
+                    price: 4000,
                     stock: 10000,
                     img: "https://i.imgur.com/bfnzKtl.jpg",
                     category: "registered",
@@ -1297,7 +1297,7 @@ sh_boxer: {
                     price: 2000,
                     stock: 10000,
                     img: "https://cdn.pixabay.com/photo/2016/11/18/16/16/refrigerator-",
-                    category: "secondhand",
+                    category: "layby",
                     ownerGrocery: "none",
                     ownerName: "none",
                     area: "none"
@@ -1535,6 +1535,16 @@ sh_boxer: {
                 if (prod.category === 'secondhand') row.appendChild(buildCard(id, prod));
             }
 
+            
+            const laybyrabel = document.createElement('div');
+           laybyrabel .className = 'section-label';
+            laybyrabel.textContent = t('🛒 LAYBY PRODUCTS', '🛒 ZOGULITSA ZOLIPIRA PANG:ONO PANG:ONO ');
+            row.appendChild(laybyrabel);
+            for (let [id, prod] of Object.entries(inventory)) {
+                if (prod.category === 'layby') row.appendChild(buildCard(id, prod));
+            }
+            
+
             messagesDiv.appendChild(row);
             scrollChat();
             renderCartSummary();
@@ -1595,7 +1605,7 @@ sh_boxer: {
                 `<div class="cart-total" style="font-weight:700;margin-top:8px;">${t('Total','Chiwerengero')}: MK ${total.toLocaleString()}</div>
             <div class="cart-actions">
               <button id="checkoutCartBtn">✅ ${t('Continue order','Malizani order')}</button>
-              <button id="clearCartBtn">🗑️ ${t('Clear','Chotsa')}</button>
+              <button id="clearCartBtn">🗑️ ${t('Clear','Chotsani')}</button>
             </div>
           </div>`;
             messagesDiv.insertAdjacentHTML('beforeend', html);
