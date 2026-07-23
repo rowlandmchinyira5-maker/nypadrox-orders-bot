@@ -25,12 +25,12 @@
             --bg: #000000;
             --accent: #050505;
             --cart-bg: #0f1322;
-            --border-subtle: rgba(255, 255, 255, 0.05);
+            --border-subtle: rgba(236, 255, 240, 0.05);
         }
         body {
             background: var(--bg);
             font-family: 'Inter', sans-serif;
-            color: #eef2ff;
+            color: #fafafa;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -87,14 +87,14 @@
             max-width: 860px;
             height: 92vh;
             max-height: 860px;
-            background: rgba(29, 30, 31, 0.86);
+            background: rgba(243, 249, 255, 0.973);
             backdrop-filter: blur(1px);
             border-radius: 32px;
             flex-direction: column;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgb(239, 249, 250);
         }
-        #loginPanel {
+         #loginPanel {
             position: fixed;
             top: 0;
             left: 0;
@@ -188,10 +188,12 @@
         .brand-info h2 {
             font-size: 1rem;
             font-weight: 600;
+              background: linear-gradient(135deg, #0d6b25, #afac08);
         }
         .brand-info p {
             font-size: 0.65rem;
             opacity: 0.7;
+             background: linear-gradient(135deg, #9e0135, #000000);
         }
         .nav-buttons {
             display: flex;
@@ -248,7 +250,7 @@
         }
         .bot-bubble {
             align-self: flex-start;
-            background: rgba(30, 35, 55, 0.95);
+            background: rgba(5, 17, 61, 0.95);
             border-bottom-left-radius: 6px;
         }
         .user-bubble {
@@ -264,13 +266,13 @@
             justify-content: center;
         }
         .product-card {
-            background: rgba(12, 15, 24, 0.9);
+            background: rgb(240, 244, 255);
             border-radius: 50px;
             padding: 10px 8px;
             text-align: center;
             flex: 1 1 130px;
             max-width: 160px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             position: relative;
         }
         .product-img {
@@ -278,7 +280,7 @@
             height: 150px;
             margin: 0 auto 6px;
             border-radius: 30px;
-            background: #2a2f44;
+            background: #f2f5ff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -296,27 +298,30 @@
         .product-name {
             font-weight: 600;
             font-size: 0.9rem;
+             color: #000000;
             margin: 4px 0 2px;
         }
         .product-price {
             font-weight: 500;
-            color: #9b87d9;
+            color: #000000;
             font-size: 0.89rem;
         }
         .stock-badge {
             font-size: 0.9rem;
             opacity: 0.7;
+             color: #000000;
             margin: 2px 0;
         }
         .owner-badge {
             font-size: 0.9rem;
             opacity: 0.8;
-            color: #8ab4f8;
+            color: #000000;
             margin: 1px 0;
         }
         .area-badge {
             font-size: 0.80rem;
             opacity: 0.6;
+            color: #000000;
             margin: 1px 0;
         }
         .section-label {
@@ -325,10 +330,10 @@
             font-weight: 700;
             font-size: 1rem;
             padding: 8px 0 4px;
-            border-bottom: 2px solid rgba(155, 135, 217, 0.3);
+            border-bottom: 2px solid rgb(0, 0, 0);
             margin: 12px 0 6px;
             letter-spacing: 1px;
-            color: #c4b5fd;
+            color: #3a18ff;
         }
         .cart-summary {
             background: var(--cart-bg);
@@ -347,7 +352,7 @@
         .qty-btn {
             background: #2a2f44;
             border: none;
-            color: white;
+            color: rgb(0, 0, 0);
             width: 28px;
             border-radius: 30px;
             font-weight: bold;
@@ -522,7 +527,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.94);
+            background: rgba(240, 247, 241, 0.911);
             z-index: 2000;
             display: flex;
             align-items: center;
@@ -688,9 +693,12 @@
             }
             .header {
                 padding: 8px 10px;
+                
             }
             .brand-info h2 {
                 font-size: 0.8rem;
+
+                 color: #000000;
             }
             .nav-btn,
             .job-header-btn,
@@ -885,7 +893,7 @@
     .status {
       margin-top: 1rem;
       font-size: 0.9rem;
-      color: #636e72;
+      color: #020202;
     }
     .img-preview {
       margin-top: 1rem;
@@ -901,6 +909,8 @@
       border: 1px solid #dfe6e9;
     }
 
+  
+
     </style>
 </head>
 <body>
@@ -915,7 +925,7 @@
 
     <div id="loginPanel">
         <div class="login-card" id="loginCard">
-            <h3 id="loginPanelTitle">🔐 Welcome to NyPadrox</h3>
+            <h3 id="loginPanelTitle"> NP</h3>
             <div id="loginDefaultView">
                 <input type="text" id="panelUsername" placeholder="Username" autocomplete="off">
                 <input type="password" id="panelPassword" placeholder="Password">
@@ -965,18 +975,18 @@
                 </div>
             </div>
             <div id="attachmentMenu" class="attachment-menu">
-                <div class="attach-option" data-type="file">📄 Documents</div>
-                <div class="attach-option" data-type="image">🖼️ Photos</div>
-                <div class="attach-option" data-type="camera">📸 Camera</div>
-                <button class="nav-btn" data-page="services">⚙️ Services</button>
-                <button class="nav-btn" data-page="contact">📞 Contact</button>
-                <button class="nav-btn" data-page="shop">🛍️ Shop</button>
-                <button class="nav-btn" data-page="about">📖 About</button>
-                <button class="job-header-btn" id="openJobBtnMain">💼 Jobs and Product Registration</button>
+                <div class="attach-option" data-type="file">📄 Documents<br></div>
+                <div class="attach-option" data-type="image"> Photos<br></div>
+                <div class="attach-option" data-type="camera">📸 Camera<br></div>
+                <button class="nav-btn" data-page="services"> Services<br></button>
+                <button class="nav-btn" data-page="contact">Contact<br></button>
+                <button class="nav-btn" data-page="shop"> Shop</button>
+                <button class="nav-btn" data-page="about"> About</button>
+                <button class="job-header-btn" id="openJobBtnMain">Jobs and Product Registration</button>
                 <button class="auth-btn" id="logoutBtnMain">👤 Logout</button>
                 <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
                 <button class="lang-btn" data-lang="ch">🇲🇼 CH</button>
-                <button class="nav-btn" data-page="home">🏠 Payments</button>
+                <button class="nav-btn" data-page="home"> Payments</button>
               
             </div>
         </div>
