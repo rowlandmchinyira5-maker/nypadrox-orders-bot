@@ -1253,7 +1253,7 @@ sh_boxer: {
                     category: "secondhand",
                     ownerGrocery: "Birdin<br> +265 886944587",
                     ownerName: "Birdin",
-                    area: " none"
+                    area: "Dedza"
                 },
 
 
@@ -1583,7 +1583,7 @@ sh_boxer: {
 
             const shLabel = document.createElement('div');
             shLabel.className = 'section-label';
-            shLabel.textContent = t('🔄 REGISTERED SECOND-HAND PRODUCTS  ', '🔄 ZOGULITSA ZA REGISTERED ZOGWILITSA NTCHITO KALE');
+            shLabel.textContent = t('🛒 REGISTERED SECOND-HAND PRODUCTS  ', '🛒 ZOGULITSA ZA REGISTERED ZOGWILITSA NTCHITO KALE');
             row.appendChild(shLabel);
             for (let [id, prod] of Object.entries(inventory)) {
                 if (prod.category === 'secondhand') row.appendChild(buildCard(id, prod));
