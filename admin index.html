@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>NYPADROX Admin</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk5ZUEFEUk9YIEFkbWluIiwKICAic2hvcnRfbmFtZSI6ICJOWVBBSVgiLAogICJkZXNjcmlwdGlvbiI6ICJBZG1pbiBwYW5lbCBmb3IgTllQQURST1ggZS1jb21tZXJjZSBwbGF0Zm9ybSIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMGQyYjNlIiwKICAidGhlbWVfY29sb3IiOiAiIzBkMmIzZSIsCiAgImljb25zIjogWwogICAgeyJzcmMiOiAiaHR0cHM6Ly9pLmltZ3VyLmNvbS84ZFpQOVZuLnBuZyIsICJzaXplcyI6ICI3Mng3MiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSJ9LAogICAgeyJzcmMiOiAiaHR0cHM6Ly9pLmltZ3VyLmNvbS84ZFpQOVZuLnBuZyIsICJzaXplcyI6ICI5Nng5NiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSJ9LAogICAgeyJzcmMiOiAiaHR0cHM6Ly9pLmltZ3VyLmNvbS84ZFpQOVZuLnBuZyIsICJzaXplcyI6ICIxMjh4MTI4IiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInB1cnBvc2UiOiAiYW55In0sCiAgICB7InNyYyI6ICJodHRwczovL2kuaW1ndXIuY29tLzhkWlA5Vm4ucG5nIiwgInNpemVzIjogIjE0NHgxNDQiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkifSwKICAgIHsic3JjIjogImh0dHBzOi8vaS5pbWd1ci5jb20vOGRaUDlWbi5wbmciLCAic2l6ZXMiOiAiMTUyeDE1MiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSJ9LAogICAgeyJzcmMiOiAiaHR0cHM6Ly9pLmltZ3VyLmNvbS84ZFpQOVZuLnBuZyIsICJzaXplcyI6ICIxOTJ4MTkyIiwgInR5cGUiOiAiaW1hZ2UvcG5nIiwgInB1cnBvc2UiOiAiYW55In0sCiAgICB7InNyYyI6ICJodHRwczovL2kuaW1ndXIuY29tLzhkWlA5Vm4ucG5nIiwgInNpemVzIjogIjM4NHgzODQiLCAidHlwZSI6ICJpbWFnZS9wbmciLCAicHVycG9zZSI6ICJhbnkifSwKICAgIHsic3JjIjogImh0dHBzOi8vaS5pbWd1ci5jb20vOGRaUDlWbi5wbmciLCAic2l6ZXMiOiAiNTEyeDUxMiIsICJ0eXBlIjogImltYWdlL3BuZyIsICJwdXJwb3NlIjogImFueSJ9CiAgXQp9">
+    <!-- Bootstrap 5 + Icons -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        body { background: #f4f7fc; }
+        .sidebar {
+            min-height: 100vh;
+            background: #0d2b3e;
+            color: #fff;
+            padding-top: 1rem;
+        }
+        .sidebar .nav-link {
+            color: #cbd5e0;
+            border-radius: 0.5rem;
+            margin-bottom: 0.2rem;
+            transition: 0.2s;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: #1a4057;
+            color: #fff;
+        }
+        .sidebar .nav-link i { width: 1.5rem; }
+        .main-content { padding: 1.5rem; }
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+        .card:hover { box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.08); }
+        .stat-card .stat-icon {
+            font-size: 2.2rem;
+            opacity: 0.3;
+        }
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .table-responsive { border-radius: 1rem; overflow: hidden; }
+        .table th { background: #f8fafc; border-top: none; }
+        .status-badge { min-width: 90px; }
+        .toast-container {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+        .login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0d2b3e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .login-box {
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 2rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .login-box .logo {
+            text-align: center;
+            color: #0d2b3e;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .login-box .logo small { font-weight: 400; font-size: 0.9rem; color: #6c757d; }
+        .btn-primary { background: #039161; border: none; }
+        .btn-primary:hover { background: #027a51; }
+        .sidebar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            padding: 0 1rem 1.5rem;
+            color: #fff;
+            border-bottom: 1px solid #1a4057;
+        }
+        .sidebar-brand small { font-weight: 400; font-size: 0.8rem; color: #94a3b8; display: block; }
+        .nav-pills .nav-link.active { background: #039161; }
+        @media (max-width: 768px) {
+            .sidebar { min-height: auto; padding-top: 0.5rem; }
+            .sidebar .nav { flex-direction: row; overflow-x: auto; flex-wrap: nowrap; gap: 0.25rem; }
+            .sidebar .nav-link { white-space: nowrap; padding: 0.5rem 0.75rem; font-size: 0.85rem; }
+            .sidebar-brand { display: none; }
+            .main-content { padding: 0.75rem; }
+            .stat-card .stat-value { font-size: 1.4rem; }
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #e9ecef;
+            border-top: 2px solid #039161;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Install button */
+        #installBtn {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9998;
+            border-radius: 50px;
+            padding: 0.6rem 2rem;
+            background: #039161;
+            color: #fff;
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(3, 145, 97, 0.4);
+            transition: 0.3s;
+            display: none;
+        }
+        #installBtn:hover {
+            background: #027a51;
+            transform: translateX(-50%) scale(1.03);
+        }
+        /* PWA splash screen */
+        #pwaSplash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0d2b3e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+        #pwaSplash.hidden { opacity: 0; }
+        #pwaSplash .loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255,255,255,0.15);
+            border-top: 4px solid #039161;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 1.2rem;
+        }
+        #pwaSplash .inner {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PWA SPLASH -->
+    <div id="pwaSplash">
+        <div class="inner">
+            <div class="loader"></div>
+            <span>NYPADROX</span>
+        </div>
+    </div>
+
+    <!-- INSTALL BUTTON -->
+    <button id="installBtn"><i class="bi bi-download me-2"></i> Install App</button>
+
+    <!-- LOGIN OVERLAY -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <div class="logo">NYPADROX <small>Admin</small></div>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="loginUsername" class="form-control" placeholder="admin" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div id="loginError" class="text-danger small mb-2"></div>
+                <button type="submit" class="btn btn-primary w-100">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app" style="display:none;">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- SIDEBAR -->
+                <nav class="col-md-2 col-12 sidebar p-3">
+                    <div class="sidebar-brand">NYPADROX <small>Admin Panel</small></div>
+                    <ul class="nav nav-pills flex-column flex-nowrap" id="sidebarNav">
+                        <li class="nav-item"><a class="nav-link active" data-section="dashboard" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="orders" href="#"><i class="bi bi-box-seam"></i> Orders</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="users" href="#"><i class="bi bi-people"></i> Users</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="products" href="#"><i class="bi bi-grid"></i> Products</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="videos" href="#"><i class="bi bi-play-btn"></i> Videos</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="conversations" href="#"><i class="bi bi-chat-dots"></i> Conversations</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="logs" href="#"><i class="bi bi-clipboard-data"></i> Logs</a></li>
+                        <li class="nav-item"><a class="nav-link" data-section="settings" href="#"><i class="bi bi-gear"></i> Settings</a></li>
+                        <li class="nav-item mt-3"><a class="nav-link text-danger" id="logoutBtn" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                    </ul>
+                </nav>
+
+                <!-- MAIN CONTENT -->
+                <main class="col-md-10 col-12 main-content">
+                    <div id="sectionContent">
+                        <!-- Dynamic content loaded here -->
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST container -->
+    <div class="toast-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script>
+        (function() {
+            'use strict';
+
+            // ---------- PWA SPLASH ----------
+            const splash = document.getElementById('pwaSplash');
+            if (splash) {
+                setTimeout(() => splash.classList.add('hidden'), 400);
+                setTimeout(() => { if (splash) splash.style.display = 'none'; }, 1200);
+            }
+
+            // ---------- SERVICE WORKER ----------
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+              self.addEventListener('install', e => {
+                e.waitUntil(
+                  caches.open('nypadrox-v1').then(c => c.addAll([
+                    '/',
+                    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css',
+                    'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css',
+                    'https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap'
+                  ]))
+                );
+                self.skipWaiting();
+              });
+              self.addEventListener('activate', e => {
+                e.waitUntil(clients.claim());
+              });
+              self.addEventListener('fetch', e => {
+                e.respondWith(
+                  caches.match(e.request).then(r => r || fetch(e.request).catch(() => new Response('Offline', {status:503})))
+                );
+              });
+            `;
+                try {
+                    const blob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(blob);
+                    navigator.serviceWorker.register(swUrl, { scope: '/' })
+                        .then(() => console.log('SW registered'))
+                        .catch(() => console.log('SW registration skipped'));
+                } catch (_) { /* SW not supported */ }
+            }
+
+            // ---------- INSTALL BUTTON ----------
+            let deferredPrompt = null;
+            const installBtn = document.getElementById('installBtn');
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBtn.style.display = 'block';
+            });
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                        showToast('App installed! 🎉', 'success');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+            window.addEventListener('appinstalled', () => {
+                installBtn.style.display = 'none';
+                showToast('NYPADROX installed successfully!', 'success');
+            });
+
+            // ---------- GLOBALS ----------
+            const API_BASE = 'https://akhopwa.onrender.com';
+            let token = null;
+            let currentSection = 'dashboard';
+            let eventSource = null;
+
+            // ---------- HELPERS ----------
+            function apiRequest(endpoint, options = {}) {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+                    ...(options.headers || {})
+                };
+                return fetch(`${API_BASE}${endpoint}`, { ...options, headers })
+                    .then(async res => {
+                        // Always try to parse JSON; if body is empty, return generic error
+                        let body;
+                        try { body = await res.json(); }
+                        catch (_) { body = { success: false, message: `HTTP ${res.status}` }; }
+                        if (res.status === 401 || res.status === 403) {
+                            // Token invalid — drop it so the user is sent back to login.
+                            sessionStorage.removeItem('adminToken');
+                            token = null;
+                        }
+                        return body;
+                    });
+            }
+
+            function showToast(message, type = 'success') {
+                const container = document.querySelector('.toast-container');
+                const bg = type === 'success' ? 'bg-success' : type === 'danger' ? 'bg-danger' : 'bg-info';
+                const html = `
+              <div class="toast align-items-center text-white ${bg} border-0 show" role="alert">
+                <div class="d-flex">
+                  <div class="toast-body">${message}</div>
+                  <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+              </div>
+            `;
+                container.insertAdjacentHTML('beforeend', html);
+                setTimeout(() => {
+                    const toasts = container.querySelectorAll('.toast');
+                    if (toasts.length) toasts[0].remove();
+                }, 4000);
+            }
+
+            function renderSpinner() {
+                return '<span class="loading-spinner"></span>';
+            }
+
+            // ---------- LOGIN ----------
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const errorEl = document.getElementById('loginError');
+                errorEl.textContent = '';
+                try {
+                    const res = await fetch(`${API_BASE}/api/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password })
+                    });
+                    const data = await res.json();
+                    if (!data.success) {
+                        errorEl.textContent = data.message || `Login failed (HTTP ${res.status})`;
+                        return;
+                    }
+                    if (!data.is_admin) {
+                        errorEl.textContent = 'This account does not have admin privileges.';
+                        return;
+                    }
+                    token = data.token;
+                    sessionStorage.setItem('adminToken', token);
+                    sessionStorage.setItem('adminUser', JSON.stringify({ username: data.username, full_name: data.full_name }));
+                    document.getElementById('loginOverlay').style.display = 'none';
+                    document.getElementById('app').style.display = 'block';
+                    initApp();
+                } catch (err) {
+                    errorEl.textContent = 'Network error, try again.';
+                }
+            });
+
+            // Auto‑login
+            const savedToken = sessionStorage.getItem('adminToken');
+            if (savedToken) {
+                token = savedToken;
+                apiRequest('/api/admin/users?limit=1')
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('loginOverlay').style.display = 'none';
+                            document.getElementById('app').style.display = 'block';
+                            initApp();
+                        } else {
+                            sessionStorage.removeItem('adminToken');
+                            token = null;
+                            // Clear the saved token from the input box focus to prompt re-login
+                            document.getElementById('loginError').textContent =
+                                'Your previous session expired. Please log in again.';
+                        }
+                    })
+                    .catch(() => {
+                        sessionStorage.removeItem('adminToken');
+                        token = null;
+                    });
+            }
+
+            // ---------- LOGOUT ----------
+            document.getElementById('logoutBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem('adminToken');
+                token = null;
+                if (eventSource) { eventSource.close(); eventSource = null; }
+                document.getElementById('app').style.display = 'none';
+                document.getElementById('loginOverlay').style.display = 'flex';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').textContent = '';
+            });
+
+            // ---------- SIDEBAR NAV ----------
+            document.querySelectorAll('#sidebarNav .nav-link[data-section]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.querySelectorAll('#sidebarNav .nav-link').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    currentSection = link.dataset.section;
+                    loadSection(currentSection);
+                });
+            });
+
+            // ---------- SECTION LOADER ----------
+            function loadSection(section) {
+                const container = document.getElementById('sectionContent');
+                container.innerHTML = `<div class="text-center py-5">${renderSpinner()} Loading...</div>`;
+                switch (section) {
+                    case 'dashboard': loadDashboard(container); break;
+                    case 'orders': loadOrders(container); break;
+                    case 'users': loadUsers(container); break;
+                    case 'products': loadProducts(container); break;
+                    case 'videos': loadVideos(container); break;
+                    case 'conversations': loadConversations(container); break;
+                    case 'logs': loadLogs(container); break;
+                    case 'settings': loadSettings(container); break;
+                    default: container.innerHTML = '<p>Section not found</p>';
+                }
+            }
+
+            // ---------- DASHBOARD ----------
+            async function loadDashboard(container) {
+                try {
+                    const [usersRes, ordersRes, productsRes, videosRes] = await Promise.all([
+                        apiRequest('/api/admin/users'),
+                        apiRequest('/api/orders'),
+                        apiRequest('/api/products'),
+                        apiRequest('/api/videos')
+                    ]);
+                    const userCount = usersRes.users ? usersRes.users.length : 0;
+                    const orderCount = ordersRes.orders ? ordersRes.orders.length : 0;
+                    const productCount = productsRes.products ? productsRes.products.length : 0;
+                    const videoCount = videosRes.videos ? videosRes.videos.length : 0;
+                    const recent = ordersRes.orders ? ordersRes.orders.slice(0, 5) : [];
+
+                    container.innerHTML = `
+                <div class="row g-4">
+                  <div class="col-lg-3 col-6"><div class="card stat-card p-3"><i class="bi bi-box-seam stat-icon float-end"></i><div class="stat-value">${orderCount}</div><div class="text-secondary">Orders</div></div></div>
+                  <div class="col-lg-3 col-6"><div class="card stat-card p-3"><i class="bi bi-people stat-icon float-end"></i><div class="stat-value">${userCount}</div><div class="text-secondary">Users</div></div></div>
+                  <div class="col-lg-3 col-6"><div class="card stat-card p-3"><i class="bi bi-grid stat-icon float-end"></i><div class="stat-value">${productCount}</div><div class="text-secondary">Products</div></div></div>
+                  <div class="col-lg-3 col-6"><div class="card stat-card p-3"><i class="bi bi-play-btn stat-icon float-end"></i><div class="stat-value">${videoCount}</div><div class="text-secondary">Videos</div></div></div>
+                </div>
+                <div class="card mt-4 p-3">
+                  <h5 class="mb-3"><i class="bi bi-clock-history"></i> Recent Orders</h5>
+                  ${recent.length ? `<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Order</th><th>Product</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody>${recent.map(o => `<tr><td>#${o.id}</td><td>${o.product_name}</td><td>MK ${o.total_mwk}</td><td><span class="badge bg-${o.status === 'pending' ? 'warning' : o.status === 'delivered' ? 'success' : 'secondary'}">${o.status}</span></td><td>${new Date(o.order_date).toLocaleDateString()}</td></tr>`).join('')}</tbody></table></div>` : '<p class="text-secondary">No orders yet.</p>'}
+                </div>
+              `;
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading dashboard: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- ORDERS (updated with phone & email) ----------
+            async function loadOrders(container) {
+                try {
+                    const data = await apiRequest('/api/orders');
+                    const orders = data.orders || [];
+                    container.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                  <h4><i class="bi bi-box-seam"></i> Orders</h4>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary me-2" id="exportOrdersBtn"><i class="bi bi-download"></i> Export CSV</button>
+                    <button class="btn btn-sm btn-outline-secondary" id="refreshOrdersBtn"><i class="bi bi-arrow-clockwise"></i></button>
+                  </div>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover" id="ordersTable">
+                    <thead><tr>
+                      <th>ID</th>
+                      <th>Product</th>
+                      <th>Qty</th>
+                      <th>Total (MK)</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Action</th>
+                    </tr></thead>
+                    <tbody>
+                      ${orders.map(o => `
+                        <tr>
+                          <td>#${o.id}</td>
+                          <td>${o.product_name}</td>
+                          <td>${o.quantity}</td>
+                          <td>MK ${o.total_mwk}</td>
+                          <td>${o.phone || '-'}</td>
+                          <td>${o.email || '-'}</td>
+                          <td><span class="badge bg-${o.status === 'pending' ? 'warning' : o.status === 'processing' ? 'info' : o.status === 'shipped' ? 'primary' : o.status === 'delivered' ? 'success' : 'secondary'} status-badge">${o.status}</span></td>
+                          <td>${new Date(o.order_date).toLocaleDateString()}</td>
+                          <td>
+                            <select class="form-select form-select-sm status-update" data-order-id="${o.id}" style="min-width:120px;">
+                              <option value="pending" ${o.status==='pending'?'selected':''}>Pending</option>
+                              <option value="processing" ${o.status==='processing'?'selected':''}>Processing</option>
+                              <option value="shipped" ${o.status==='shipped'?'selected':''}>Shipped</option>
+                              <option value="delivered" ${o.status==='delivered'?'selected':''}>Delivered</option>
+                              <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Cancelled</option>
+                            </select>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    document.querySelectorAll('.status-update').forEach(sel => {
+                        sel.addEventListener('change', async (e) => {
+                            const orderId = e.target.dataset.orderId;
+                            const newStatus = e.target.value;
+                            try {
+                                const res = await apiRequest(`/api/admin/order/${orderId}`, {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({ status: newStatus })
+                                });
+                                if (res.success) {
+                                    showToast(`Order #${orderId} updated to ${newStatus}`, 'success');
+                                    loadOrders(document.getElementById('sectionContent'));
+                                } else {
+                                    showToast(res.message || 'Update failed', 'danger');
+                                }
+                            } catch (err) {
+                                showToast('Error updating status', 'danger');
+                            }
+                        });
+                    });
+                    document.getElementById('exportOrdersBtn')?.addEventListener('click', () => {
+                        exportOrdersCSV(orders);
+                    });
+                    document.getElementById('refreshOrdersBtn')?.addEventListener('click', () => {
+                        loadOrders(container);
+                    });
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading orders: ${err.message}</div>`;
+                }
+            }
+
+            function exportOrdersCSV(orders) {
+                if (!orders.length) { showToast('No orders to export', 'danger'); return; }
+                const headers = ['ID','Product','Quantity','Total MWK','Phone','Email','Status','Date'];
+                const rows = orders.map(o => [o.id, o.product_name, o.quantity, o.total_mwk, o.phone || '', o.email || '', o.status, o.order_date]);
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `orders_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+
+            // ---------- USERS ----------
+            async function loadUsers(container) {
+                try {
+                    const data = await apiRequest('/api/admin/users');
+                    const users = data.users || [];
+                    container.innerHTML = `
+                <h4><i class="bi bi-people"></i> Users</h4>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead><tr><th>Username</th><th>Email</th><th>Full Name</th><th>Admin</th><th>Active</th><th>Verified</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      ${users.map(u => `
+                        <tr>
+                          <td>${u.username}</td>
+                          <td>${u.email}</td>
+                          <td>${u.full_name}</td>
+                          <td><input type="checkbox" class="form-check-input user-toggle" data-user-id="${u.id}" data-field="is_admin" ${u.is_admin?'checked':''}></td>
+                          <td><input type="checkbox" class="form-check-input user-toggle" data-user-id="${u.id}" data-field="is_active" ${u.is_active?'checked':''}></td>
+                          <td><input type="checkbox" class="form-check-input user-toggle" data-user-id="${u.id}" data-field="email_verified" ${u.email_verified?'checked':''}></td>
+                          <td><span class="badge bg-secondary">${u.id}</span></td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    document.querySelectorAll('.user-toggle').forEach(cb => {
+                        cb.addEventListener('change', async (e) => {
+                            const userId = e.target.dataset.userId;
+                            const field = e.target.dataset.field;
+                            const value = e.target.checked;
+                            try {
+                                const res = await apiRequest(`/api/admin/users/${userId}`, {
+                                    method: 'PUT',
+                                    body: JSON.stringify({ [field]: value })
+                                });
+                                if (res.success) showToast('User updated', 'success');
+                                else showToast(res.message || 'Update failed', 'danger');
+                            } catch (err) {
+                                showToast('Error updating user', 'danger');
+                                e.target.checked = !value;
+                            }
+                        });
+                    });
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading users: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- PRODUCTS ----------
+            async function loadProducts(container) {
+                try {
+                    const data = await apiRequest('/api/products');
+                    const products = data.products || [];
+                    container.innerHTML = `
+                <h4><i class="bi bi-grid"></i> Products (with images)</h4>
+                <div class="row g-3">
+                  ${products.map(p => `
+                    <div class="col-lg-3 col-md-4 col-6">
+                      <div class="card h-100">
+                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${p.name}" style="height:120px;object-fit:cover;" loading="lazy" decoding="async">
+                        <div class="card-body p-2">
+                          <h6 class="card-title">${p.emoji} ${p.name}</h6>
+                          <p class="card-text small">MK ${p.price_mwk}</p>
+                          <span class="badge ${p.stock > 0 ? 'bg-success' : 'bg-danger'}">${p.stock > 0 ? 'In stock' : 'Out of stock'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `;
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading products: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- VIDEOS ----------
+            async function loadVideos(container) {
+                try {
+                    const data = await apiRequest('/api/videos');
+                    const videos = data.videos || [];
+                    container.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h4><i class="bi bi-play-btn"></i> Videos</h4>
+                  <button class="btn btn-sm btn-primary" id="addVideoBtn"><i class="bi bi-plus"></i> Add</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead><tr><th>Title</th><th>Source</th><th>Views</th><th>Actions</th></tr></thead>
+                    <tbody>
+                      ${videos.map(v => `
+                        <tr>
+                          <td>${v.title}</td>
+                          <td>${v.source}</td>
+                          <td>${v.views}</td>
+                          <td>
+                            <button class="btn btn-sm btn-outline-danger delete-video" data-key="${v.key}"><i class="bi bi-trash"></i></button>
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                    document.querySelectorAll('.delete-video').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const key = e.target.closest('button').dataset.key;
+                            if (!confirm(`Delete video "${key}"?`)) return;
+                            try {
+                                const res = await apiRequest(`/api/admin/videos/${key}`, { method: 'DELETE' });
+                                if (res.success) { showToast('Video deleted', 'success'); loadVideos(container); }
+                                else showToast(res.message || 'Delete failed', 'danger');
+                            } catch (err) {
+                                showToast('Error deleting video', 'danger');
+                            }
+                        });
+                    });
+                    document.getElementById('addVideoBtn')?.addEventListener('click', () => {
+                        const key = prompt('Enter video key (unique):');
+                        if (!key) return;
+                        const title = prompt('Title:');
+                        if (!title) return;
+                        const url = prompt('Video URL:');
+                        if (!url) return;
+                        apiRequest('/api/admin/videos', {
+                            method: 'POST',
+                            body: JSON.stringify({ video_key: key, title, video_url: url })
+                        }).then(res => {
+                            if (res.success) { showToast('Video added', 'success'); loadVideos(container); }
+                            else showToast(res.message || 'Add failed', 'danger');
+                        }).catch(() => showToast('Error adding video', 'danger'));
+                    });
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading videos: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- CONVERSATIONS ----------
+            async function loadConversations(container) {
+                try {
+                    const data = await apiRequest('/api/admin/conversations?limit=200');
+                    const logs = data.logs || [];
+                    const total = data.total || logs.length;
+
+                    container.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+                  <h4><i class="bi bi-chat-dots"></i> Conversations (${total} messages)</h4>
+                  <button class="btn btn-sm btn-outline-secondary" id="refreshConvosBtn"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Session</th>
+                        <th>User Message</th>
+                        <th>Bot Response</th>
+                        <th>Timestamp</th>
+                        <th>Edited</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${logs.length ? logs.map(l => `
+                        <tr>
+                          <td>#${l.id}</td>
+                          <td>${l.username || 'Anonymous'}${l.full_name ? `<br><small class="text-secondary">${l.full_name}</small>` : ''}</td>
+                          <td><code>${l.session_id ? l.session_id.substring(0,8)+'…' : '-'}</code></td>
+                          <td>${l.user_message ? l.user_message.substring(0, 60) + (l.user_message.length > 60 ? '…' : '') : ''}</td>
+                          <td>${l.bot_response ? l.bot_response.substring(0, 60) + (l.bot_response.length > 60 ? '…' : '') : ''}</td>
+                          <td>${new Date(l.timestamp).toLocaleString()}</td>
+                          <td>${l.is_edited ? '✅' : ''}</td>
+                        </tr>
+                      `).join('') : `<tr><td colspan="7" class="text-center text-secondary">No conversations found.</td></tr>`}
+                    </tbody>
+                  </table>
+                </div>
+                ${total > logs.length ? `<p class="text-secondary small">Showing ${logs.length} of ${total} logs. Use filters (user_id, session_id) for more.</p>` : ''}
+              `;
+                    document.getElementById('refreshConvosBtn')?.addEventListener('click', () => {
+                        loadConversations(container);
+                    });
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading conversations: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- LOGS ----------
+            async function loadLogs(container) {
+                try {
+                    const data = await apiRequest('/api/admin/logs?limit=200');
+                    const logs = data.logs || [];
+                    container.innerHTML = `
+                <h4><i class="bi bi-clipboard-data"></i> User Logs</h4>
+                <div class="table-responsive">
+                  <table class="table table-sm table-hover">
+                    <thead><tr><th>User</th><th>Action</th><th>Details</th><th>IP</th><th>Time</th></tr></thead>
+                    <tbody>
+                      ${logs.map(l => `
+                        <tr>
+                          <td>${l.user_id}</td>
+                          <td>${l.action}</td>
+                          <td>${l.details}</td>
+                          <td>${l.ip_address}</td>
+                          <td>${new Date(l.timestamp).toLocaleString()}</td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              `;
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading logs: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- SETTINGS ----------
+            async function loadSettings(container) {
+                try {
+                    const data = await apiRequest('/api/admin/settings');
+                    const settings = data.settings || {};
+                    container.innerHTML = `
+                <h4><i class="bi bi-gear"></i> System Settings</h4>
+                <div class="row">
+                  ${Object.entries(settings).map(([key, val]) => `
+                    <div class="col-md-6 mb-3">
+                      <div class="card p-3">
+                        <strong>${key}</strong>
+                        <p class="text-secondary small">${val.description}</p>
+                        <div class="input-group">
+                          <input type="text" class="form-control form-control-sm setting-input" data-key="${key}" value="${val.value}" placeholder="Value">
+                          <button class="btn btn-sm btn-outline-primary save-setting" data-key="${key}">Save</button>
+                        </div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `;
+                    document.querySelectorAll('.save-setting').forEach(btn => {
+                        btn.addEventListener('click', async (e) => {
+                            const key = e.target.dataset.key;
+                            const input = document.querySelector(`.setting-input[data-key="${key}"]`);
+                            const value = input.value;
+                            try {
+                                const res = await apiRequest('/api/admin/settings', {
+                                    method: 'POST',
+                                    body: JSON.stringify({ key, value })
+                                });
+                                if (res.success) { showToast('Setting updated', 'success'); }
+                                else showToast(res.message || 'Update failed', 'danger');
+                            } catch (err) {
+                                showToast('Error updating setting', 'danger');
+                            }
+                        });
+                    });
+                } catch (err) {
+                    container.innerHTML = `<div class="alert alert-danger">Error loading settings: ${err.message}</div>`;
+                }
+            }
+
+            // ---------- SSE ----------
+            function initSSE() {
+                if (eventSource) { eventSource.close(); eventSource = null; }
+                try {
+                    eventSource = new EventSource(`${API_BASE}/api/events?token=${encodeURIComponent(token)}`);
+                    eventSource.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            if (data.type === 'ping') return;
+                            showToast(`📢 ${data.type}: ${JSON.stringify(data.data)}`, 'info');
+                            if (['order', 'order_updated', 'new_video', 'video_deleted', 'sync_complete'].includes(data.type)) {
+                                if (currentSection === 'orders' || currentSection === 'videos' || currentSection === 'dashboard') {
+                                    loadSection(currentSection);
+                                }
+                            }
+                        } catch (_) {}
+                    };
+                    eventSource.onerror = () => {
+                        console.warn('SSE lost, reconnecting...');
+                        setTimeout(initSSE, 5000);
+                    };
+                } catch (_) {
+                    console.warn('SSE not available');
+                }
+            }
+
+            // ---------- INIT ----------
+            function initApp() {
+                loadSection('dashboard');
+                initSSE();
+                setInterval(() => {
+                    if (currentSection === 'dashboard') loadSection('dashboard');
+                }, 30000);
+            }
+
+        })();
+    </script>
+</body>
+</html>
