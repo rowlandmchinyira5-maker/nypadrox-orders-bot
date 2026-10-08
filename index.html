@@ -4,13 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=yes,viewport-fit=cover">
 <meta name="theme-color" content="#039161">
+<meta name="description" content="NyPadrox Online Marketplace — shop quality products across Malawi with mobile money & cash on delivery.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" id="manifestLink">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NyPadrox">
+<meta name="application-name" content="NyPadrox">
+<link rel="manifest" href="manifest.json">
 <title>NyPadrox Online Marketplace</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" type="image/png" href="https://i.imgur.com/57yg1jO.jpg">
-<link rel="apple-touch-icon" href="https://i.imgur.com/57yg1jO.jpg">
+<link rel="icon" type="image/jpeg" href="https://i.imgur.com/57yg1jO.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="https://i.imgur.com/57yg1jO.jpg">
+<link rel="apple-touch-icon" sizes="192x192" href="https://i.imgur.com/57yg1jO.jpg">
+<link rel="apple-touch-icon" sizes="512x512" href="https://i.imgur.com/57yg1jO.jpg">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 :root{
@@ -522,7 +528,8 @@ input{font-family:inherit}
   <nav class="home-nav">
     <button class="home-nav-item active" data-nav="home"><span class="nav-icon"><i class="fas fa-home"></i></span><span>Home</span></button>
     <button class="home-nav-item" data-nav="categories"><span class="nav-icon"><i class="fas fa-th-large"></i></span><span>Categories</span></button>
-    <button class="home-nav-item" data-nav="chat"><span class="nav-icon"><i class="fas fa-comment-dots"></i></span><span>AI Chat</span></button>
+    <button class="home-nav-item" data-nav="chat"><span class="nav-icon"><i class="fas fa-comment-dots"></i></span><span>AI Chat</span>
+      <span class="nav-badge" id="navChatBadge" style="display:none">0</span></button>
     <button class="home-nav-item" data-nav="cart"><span class="nav-icon"><i class="fas fa-shopping-bag"></i></span><span>Cart</span>
       <span class="nav-badge" id="navCartBadge" style="display:none">0</span></button>
     <button class="home-nav-item" data-nav="account"><span class="nav-icon"><i class="fas fa-user"></i></span><span>Account</span></button>
@@ -778,6 +785,35 @@ function homeToast(msg){
 }
 
 /* ============================================================
+   AI CHAT ORDER NOTIFICATION BADGE
+   ============================================================ */
+function getPendingOrders(){
+  const n=parseInt(localStorage.getItem('np_pending_orders')||'0',10);
+  return isNaN(n)||n<0?0:n;
+}
+function setPendingOrders(n){
+  try{localStorage.setItem('np_pending_orders',String(Math.max(0,n|0)))}catch(e){}
+  updateChatBadge();
+}
+function incrementOrderBadge(){
+  setPendingOrders(getPendingOrders()+1);
+}
+function clearChatBadge(){
+  setPendingOrders(0);
+}
+function updateChatBadge(){
+  const el=$('navChatBadge');
+  if(!el)return;
+  const n=getPendingOrders();
+  if(n>0){
+    el.textContent=n>99?'99+':n;
+    el.style.display='flex';
+  }else{
+    el.style.display='none';
+  }
+}
+
+/* ============================================================
    VIDEO SEEN TRACKING
    ============================================================ */
 function getSeenVideos(){
@@ -818,14 +854,12 @@ function typeBotMessage(text,onDone){
   chatBubblesEl.appendChild(b);
   scrollChat();
 
-  // Render newlines + bold inline as we go
   const raw=String(text??'');
   let i=0;
   const cursor='<span class="typing-cursor"></span>';
 
   function render(){
     const shown=raw.slice(0,i);
-    // Convert newlines to <br> and **bold** on the fly
     let html=esc(shown).replace(/\n/g,'<br>').replace(/\*([^*]+)\*/g,'<strong>$1</strong>');
     b.innerHTML=html+cursor;
     scrollChat();
@@ -835,10 +869,8 @@ function typeBotMessage(text,onDone){
     if(i<raw.length){
       i++;
       render();
-      // Speed: 20ms per char (fast but visible)
       setTimeout(tick,20);
     } else {
-      // Final render without cursor
       let html=esc(raw).replace(/\n/g,'<br>').replace(/\*([^*]+)\*/g,'<strong>$1</strong>');
       b.innerHTML=html+'<div class="timestamp"></div>';
       scrollChat();
@@ -1226,6 +1258,7 @@ async function sendOrder(){
         <div style="font-size:14px"><strong>Total:</strong> ${money(payload.total_mwk,payload.total_usd)}</div>
         <div style="font-size:14px;margin-top:6px">We'll contact you at ${esc(orderData.phone)}.</div>
       </div>`);
+      incrementOrderBadge();
       currentCart=[];waitingForCheckout=false;waitingForQty=false;currentProductKey=null;orderData={};currentOrderStep=0;
       updateCartBadges();
     } else addBotMsg('Order failed: '+(d.message||'Unknown error'));
@@ -1308,7 +1341,6 @@ function renderCatalog(d){
    VIDEOS — LOGIN REQUIRED
    ============================================================ */
 async function openVideos(){
-  // LOGIN GATE
   if(!isLoggedIn()){
     pendingOrderKey=null;pendingCartCheckout=false;
     const m=$('videoModal');if(m)m.classList.remove('open');
@@ -1494,6 +1526,7 @@ async function doPay(){
           <div><strong>Payment:</strong> ${provName}</div>
           <div><strong>Total:</strong> ${moneyM(tM)}</div>
         </div>`);
+        incrementOrderBadge();
         currentCart=[];pendingPayData=null;waitingForCheckout=false;orderData={};currentOrderStep=0;updateCartBadges();
         toast('Order Placed','Payment received');
       } else mmStatus('Order failed: '+(d2.message||''),'err');
@@ -1636,6 +1669,7 @@ document.querySelectorAll('.home-nav-item').forEach(btn=>{
         showLoginWithMessage('Please login to chat with our AI assistant');
         return;
       }
+      clearChatBadge();
       openChat(false);
     }
     else if(nav==='cart'){const b=$('homeCartBtn');if(b)b.click();}
@@ -1928,54 +1962,98 @@ function connectSSE(token){
 }
 
 /* ============================================================
-   PWA
+   PWA — REAL INSTALL (manifest.json + sw.js)
    ============================================================ */
 let deferredPrompt=null;
-const isStandalone=()=>{
-  try{return matchMedia('(display-mode: standalone)').matches||navigator.standalone===true}
-  catch(e){return false}
-};
-const isMobile=()=>/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-function refreshInstall(){
-  const b=$('installBtn');if(!b)return;
-  if(isStandalone()){b.style.display='none';return}
-  if(isMobile()||deferredPrompt)b.style.display='inline-flex';
-  else b.style.display='none';
-}
-window.addEventListener('appinstalled',()=>{deferredPrompt=null;const b=$('installBtn');if(b)b.style.display='none';toast('Installed','NYPADROX added to home screen')});
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;refreshInstall()});
-if($('installBtn'))$('installBtn').onclick=async()=>{
-  if(deferredPrompt){
-    try{
-      deferredPrompt.prompt();
-      const {outcome}=await deferredPrompt.userChoice;
-      if(outcome==='accepted')$('installBtn').style.display='none';
-      deferredPrompt=null;
-    }catch(e){alert('Open browser menu → Install App')}
-  } else alert('Open browser menu → Install App / Add to Home Screen');
-};
 
-try{
-  const mf={
-    name:"NyPadrox Marketplace",short_name:"NPMP",
-    description:"Shop premium products easily",
-    start_url:".",scope:".",display:"standalone",orientation:"portrait",
-    background_color:"#f5f7fa",theme_color:"#039161",
-    icons:[
-      {src:"https://i.imgur.com/57yg1jO.jpg",sizes:"192x192",type:"image/jpeg"},
-      {src:"https://i.imgur.com/57yg1jO.jpg",sizes:"512x512",type:"image/jpeg"}
-    ]
+const isStandalone=()=>{
+  try{
+    return (window.matchMedia('(display-mode: standalone)').matches ||
+            window.matchMedia('(display-mode: fullscreen)').matches ||
+            window.matchMedia('(display-mode: minimal-ui)').matches ||
+            window.navigator.standalone===true);
+  }catch(e){return false}
+};
+const isIOS=()=>{
+  const ua=navigator.userAgent||'';
+  const iOS=/iPad|iPhone|iPod/.test(ua) ||
+            (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  return iOS && !window.MSStream;
+};
+const isSafari=()=>/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent||'');
+
+function refreshInstall(){
+  const b=$('installBtn');
+  if(!b)return;
+  if(isStandalone()){ b.style.display='none'; return; }
+  // Chrome / Edge / Samsung / Opera (Android, desktop)
+  if(deferredPrompt){ b.style.display='inline-flex'; return; }
+  // iOS Safari — no beforeinstallprompt event; we guide the user manually
+  if(isIOS()){ b.style.display='inline-flex'; return; }
+  // macOS Safari — "Add to Dock"
+  if(isSafari() && /Mac/.test(navigator.platform)){ b.style.display='inline-flex'; return; }
+  b.style.display='none';
+}
+
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  refreshInstall();
+});
+
+window.addEventListener('appinstalled',()=>{
+  deferredPrompt=null;
+  const b=$('installBtn'); if(b) b.style.display='none';
+  toast('Installed','NyPadrox added to your device');
+});
+
+if($('installBtn')){
+  $('installBtn').onclick=async()=>{
+    if(deferredPrompt){
+      try{
+        deferredPrompt.prompt();
+        const choice=await deferredPrompt.userChoice;
+        if(choice && choice.outcome==='accepted'){
+          const b=$('installBtn'); if(b) b.style.display='none';
+          toast('Installing','NyPadrox is being installed');
+        }
+      }catch(e){}
+      deferredPrompt=null;
+      refreshInstall();
+      return;
+    }
+    if(isIOS()){
+      alert('Install NyPadrox on iPhone / iPad:\n\n' +
+            '1. Tap the Share button (the square with an up-arrow) in Safari\n' +
+            '2. Scroll down and tap "Add to Home Screen"\n' +
+            '3. Tap "Add" in the top-right corner\n\n' +
+            'The NyPadrox icon will then appear on your home screen.');
+      return;
+    }
+    if(isSafari()){
+      alert('Install NyPadrox on macOS Safari:\n\n' +
+            'File menu → "Add to Dock…"\n\n' +
+            '(If you don\'t see it, update Safari to version 17 or later.)');
+      return;
+    }
+    alert('Install NyPadrox:\n\n' +
+          '• Chrome / Edge: open the browser menu (⋮) → "Install NyPadrox" or "Install app"\n' +
+          '• Firefox (Android): menu → "Install"\n' +
+          '• Samsung Internet: menu → "Add page to" → "Home screen"');
   };
-  const blob=new Blob([JSON.stringify(mf)],{type:'application/manifest+json'});
-  const ml=$('manifestLink');if(ml)ml.href=URL.createObjectURL(blob);
-}catch(e){}
+}
+
+/* ---- Register the real service worker ---- */
 if('serviceWorker' in navigator){
-  const sw=`const C='np-v3';self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))});`;
-  addEventListener('load',()=>{
-    try{
-      const blob=new Blob([sw],{type:'application/javascript'});
-      navigator.serviceWorker.register(URL.createObjectURL(blob),{scope:'./'}).catch(()=>{});
-    }catch(e){}
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js',{scope:'./'})
+      .then(reg=>{
+        // Ask for update check periodically
+        try{ reg.update(); }catch(e){}
+      })
+      .catch(err=>{
+        console.warn('Service worker registration failed:',err);
+      });
   });
 }
 
@@ -1998,6 +2076,7 @@ window.onload=()=>{
     hide(loginPageEl);
     hide(chatPageEl);
     updateCartBadges();
+    updateChatBadge();
     refreshInstall();
   }catch(err){console.error('Show home error:',err)}
 
