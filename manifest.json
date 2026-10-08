@@ -1,19 +1,22 @@
 {
+  "id": "./",
   "name": "NyPadrox Online Marketplace",
   "short_name": "NyPadrox",
   "description": "Shop quality products across Malawi with mobile money & cash on delivery.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "orientation": "any",
   "background_color": "#f4f6f8",
   "theme_color": "#039161",
   "lang": "en",
+  "dir": "ltr",
   "categories": ["shopping", "business"],
+  "prefer_related_applications": false,
   "icons": [
-    { "src": "https://i.imgur.com/57yg1jO.jpg", "sizes": "192x192", "type": "image/jpeg", "purpose": "any" },
-    { "src": "https://i.imgur.com/57yg1jO.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "any" },
-    { "src": "https://i.imgur.com/57yg1jO.jpg", "sizes": "192x192", "type": "image/jpeg", "purpose": "maskable" },
-    { "src": "https://i.imgur.com/57yg1jO.jpg", "sizes": "512x512", "type": "image/jpeg", "purpose": "maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "192x192 512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
