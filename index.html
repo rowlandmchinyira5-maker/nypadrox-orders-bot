@@ -2139,14 +2139,19 @@ const isIOS=()=>{
 };
 const isSafari=()=>/^((?!chrome|android|crios|fxios).)*safari/i.test(navigator.userAgent||'');
 
+/* ============================================================
+   FIX: install button now appears on FIRST LOAD
+   (no longer depends on beforeinstallprompt firing)
+   and disappears only AFTER installation (persisted flag).
+   ============================================================ */
 function refreshInstall(){
   const b=$('installBtn');
   if(!b)return;
+  try{
+    if(localStorage.getItem('np_installed')==='1'){ b.style.display='none'; return; }
+  }catch(e){}
   if(isStandalone()){ b.style.display='none'; return; }
-  if(deferredPrompt){ b.style.display='inline-flex'; return; }
-  if(isIOS()){ b.style.display='inline-flex'; return; }
-  if(isSafari() && /Mac/.test(navigator.platform)){ b.style.display='inline-flex'; return; }
-  b.style.display='none';
+  b.style.display='inline-flex';
 }
 
 window.addEventListener('beforeinstallprompt',(e)=>{
@@ -2157,6 +2162,7 @@ window.addEventListener('beforeinstallprompt',(e)=>{
 
 window.addEventListener('appinstalled',()=>{
   deferredPrompt=null;
+  try{ localStorage.setItem('np_installed','1'); }catch(e){}
   const b=$('installBtn'); if(b) b.style.display='none';
   toast('Installed','NyPadrox added to your device');
 });
@@ -2168,6 +2174,7 @@ if($('installBtn')){
         deferredPrompt.prompt();
         const choice=await deferredPrompt.userChoice;
         if(choice && choice.outcome==='accepted'){
+          try{ localStorage.setItem('np_installed','1'); }catch(e){}
           const b=$('installBtn'); if(b) b.style.display='none';
           toast('Installing','NyPadrox is being installed');
         }
