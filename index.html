@@ -57,6 +57,30 @@ input{font-family:inherit}
 .home-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:17px}
 .home-brand-logo{width:34px;height:34px;border-radius:10px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center}
 .home-brand-logo img{width:100%;height:100%;object-fit:cover}
+
+/* ==== Change 4: Animated NyPadrox brand name ==== */
+.home-brand > span{
+  display:inline-block;
+  font-weight:800;
+  letter-spacing:.4px;
+  background:linear-gradient(90deg,#ffffff 0%,#7ef7c7 25%,#ffffff 50%,#7ef7c7 75%,#ffffff 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  animation:brandShine 3.5s linear infinite,brandPulse 3s ease-in-out infinite;
+  transform-origin:center;
+}
+@keyframes brandShine{
+  0%{background-position:0% center}
+  100%{background-position:200% center}
+}
+@keyframes brandPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.06)}
+}
+
 .home-appbar-actions{display:flex;align-items:center;gap:6px}
 .home-icon-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:50%;
                width:38px;height:38px;display:flex;align-items:center;justify-content:center;color:#fff;
@@ -148,11 +172,13 @@ input{font-family:inherit}
 .login-box .switch{margin-top:16px;font-size:14px;color:#000;cursor:pointer}
 .login-box .switch:hover{color:#554f4f}
 
-.google-btn{background:#ffffff;border:1px solid #dadce0;border-radius:8px;padding:10px 18px;
-            color:#3c4043;display:inline-flex;align-items:center;gap:10px;font-weight:500;font-size:14px;
-            font-family:Inter,Arial,sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.05);transition:all .2s}
-.google-btn:hover{background:#f8f9fa;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.google-btn svg{flex-shrink:0}
+/* ==== Change 2: Google button — black background, white text ==== */
+.google-btn{background:#000000;border:1px solid #333333;border-radius:8px;padding:10px 18px;
+            color:#ffffff;display:inline-flex;align-items:center;gap:10px;font-weight:500;font-size:14px;
+            font-family:Inter,Arial,sans-serif;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:all .2s}
+.google-btn:hover{background:#1a1a1a;box-shadow:0 2px 6px rgba(0,0,0,.35)}
+.google-btn span{color:#ffffff}
+.google-btn svg{flex-shrink:0;background:#ffffff;border-radius:50%;padding:2px}
 
 #chatPage{position:fixed;inset:0;z-index:550;background:#f7f9fb;display:flex;flex-direction:column;
           padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
@@ -439,8 +465,9 @@ input{font-family:inherit}
             pointer-events:none;transition:all .3s;max-width:90vw;text-align:center}
 .home-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ==== Change 1: Install button — blue ==== */
 .install-btn{position:fixed;bottom:calc(72px + var(--safe-bottom));right:14px;padding:10px 16px;height:42px;
-             border-radius:21px;background:linear-gradient(135deg,#068838,#02556e);color:#fff;border:none;
+             border-radius:21px;background:linear-gradient(135deg,#035191,#0277bd);color:#fff;border:none;
              box-shadow:0 4px 14px rgba(0,0,0,.28);font-size:13px;font-weight:600;z-index:1000;display:none;
              align-items:center;gap:7px;white-space:nowrap}
 @media(max-width:480px){
@@ -488,7 +515,8 @@ input{font-family:inherit}
             <i class="fas fa-shopping-cart"></i>
             <span class="home-cart-badge" id="homeCartBadge" style="display:none">0</span>
           </button>
-          <button class="home-login-pill" id="homeLoginBtn">Login</button>
+          <!-- ==== Change 3: Login -> Sign in ==== -->
+          <button class="home-login-pill" id="homeLoginBtn">Sign in</button>
         </div>
       </div>
       <div class="home-search">
@@ -763,6 +791,36 @@ const carouselTrackEl=$('carouselTrack');
 const toastContainer=$('toasts');
 
 /* ============================================================
+   Change 5: PHONE BACK-BUTTON HANDLING
+   Keeps an in-memory stack of "screens" synced with browser history
+   so the hardware back button closes the topmost modal/page instead
+   of exiting the app.
+   ============================================================ */
+const npScreens=[];
+let npSkipPop=0;
+
+function npEnterScreen(closeFn){
+  npScreens.push(closeFn);
+  try{ history.pushState({npScreen:npScreens.length},''); }catch(e){}
+}
+function npExitScreen(){
+  if(!npScreens.length) return false;
+  const fn=npScreens.pop();
+  if(typeof fn==='function'){ try{ fn(); }catch(e){ console.warn('np close err',e); } }
+  npSkipPop++;
+  try{ history.back(); }catch(e){ npSkipPop--; }
+  return true;
+}
+window.addEventListener('popstate',()=>{
+  if(npSkipPop>0){ npSkipPop--; return; }
+  if(npScreens.length){
+    const fn=npScreens.pop();
+    if(typeof fn==='function'){ try{ fn(); }catch(e){ console.warn('np close err',e); } }
+  }
+});
+window.npExitScreen=npExitScreen;
+
+/* ============================================================
    UTILITY
    ============================================================ */
 function money(m,u){return 'MK '+Number(m||0).toLocaleString()+' ($'+Number(u||0).toFixed(2)+')'}
@@ -911,15 +969,17 @@ function addBotMsg(html){
 }
 
 /* ============================================================
-   ZOOM
+   ZOOM (tracks back-button)
    ============================================================ */
 function zoomImg(src){
   if(!src)return;
   const o=document.createElement('div');o.className='zoom-overlay';
   o.innerHTML=`<button class="zoom-close">&times;</button><div class="zoom-wrap"><img src="${src}"></div>`;
-  o.querySelector('.zoom-close').onclick=e=>{e.stopPropagation();o.remove()};
-  o.onclick=e=>{if(e.target===o)o.remove()};
+  const closeFn=()=>{ if(o.parentElement) o.remove(); };
+  o.querySelector('.zoom-close').onclick=e=>{e.stopPropagation();npExitScreen()};
+  o.onclick=e=>{if(e.target===o)npExitScreen()};
   document.body.appendChild(o);
+  npEnterScreen(closeFn);
 }
 function zoomProduct(src,data){
   const o=document.createElement('div');o.className='zoom-overlay';
@@ -933,13 +993,17 @@ function zoomProduct(src,data){
       ${stock?`<div style="color:#8bc34a;font-size:13px;margin-bottom:8px">${stock}</div>`:''}
       <button class="zi-btn" data-key="${esc(data.key||'')}">Order Now</button>
     </div>`;
-  o.querySelector('.zoom-close').onclick=e=>{e.stopPropagation();o.remove()};
-  o.onclick=e=>{if(e.target===o)o.remove()};
+  const closeFn=()=>{ if(o.parentElement) o.remove(); };
+  o.querySelector('.zoom-close').onclick=e=>{e.stopPropagation();npExitScreen()};
+  o.onclick=e=>{if(e.target===o)npExitScreen()};
   o.querySelector('.zi-btn').onclick=e=>{
-    e.stopPropagation();o.remove();
-    const k=e.currentTarget.dataset.key;if(k)handleOrder(k);
+    e.stopPropagation();
+    const k=e.currentTarget.dataset.key;
+    npExitScreen();
+    if(k) setTimeout(()=>handleOrder(k),80);
   };
   document.body.appendChild(o);
+  npEnterScreen(closeFn);
 }
 
 /* ============================================================
@@ -1037,7 +1101,7 @@ function toggleWish(key){
 }
 
 /* ============================================================
-   QUICK VIEW
+   QUICK VIEW (tracks back-button)
    ============================================================ */
 function openQV(key){
   const p=allProducts.find(x=>x.key===key);if(!p)return;
@@ -1060,10 +1124,17 @@ function openQV(key){
     <div class="qv-meta"><strong>Features:</strong> ${esc(p.features||'N/A')}</div>
     <div class="qv-meta"><strong>Category:</strong> ${esc(p.category||'General')}</div>
     <div class="qv-meta"><strong>Stock:</strong> ${stock>0?stock+' in stock':'Out of stock'}</div>
-    <button class="qv-btn" ${stock>0?'':'disabled'} onclick="closeQV();handleOrder('${esc(p.key)}')">Order Now</button>`;
-  m.classList.add('open');
+    <button class="qv-btn" ${stock>0?'':'disabled'} onclick="handleOrder('${esc(p.key)}')">Order Now</button>`;
+  if(!m.classList.contains('open')){
+    m.classList.add('open');
+    npEnterScreen(()=>{ m.classList.remove('open'); });
+  }
 }
-function closeQV(){const m=$('qvModal');if(m)m.classList.remove('open')}
+function closeQV(){
+  const m=$('qvModal');
+  if(!m||!m.classList.contains('open'))return;
+  npExitScreen();
+}
 window.closeQV=closeQV;
 
 /* ============================================================
@@ -1073,29 +1144,51 @@ function handleOrder(key){
   closeQV();
   if(!isLoggedIn()){
     pendingOrderKey=key;pendingCartCheckout=false;
-    showLoginWithMessage('Please login or create an account to place your order');
+    setTimeout(()=>showLoginWithMessage('Please login or create an account to place your order'),80);
     return;
   }
-  openChat(true);
-  setTimeout(()=>startOrder(key),300);
+  setTimeout(()=>{
+    openChat(true);
+    setTimeout(()=>startOrder(key),300);
+  },80);
 }
 window.handleOrder=handleOrder;
 
 function showLoginWithMessage(msg){
+  const wasHidden = loginPageEl && loginPageEl.classList.contains('hidden');
   if(homePageEl)hide(homePageEl);
   if(chatPageEl)hide(chatPageEl);
   if(loginPageEl)show(loginPageEl);
+  if(wasHidden){
+    npEnterScreen(()=>{
+      hide(loginPageEl);
+      show(homePageEl);
+    });
+  }
   const e=$('loginErr');
-  if(e){e.textContent=msg;e.style.display='block';setTimeout(()=>{e.style.display='none'},6000)}
+  if(e){
+    if(msg){ e.textContent=msg; e.style.display='block'; setTimeout(()=>{e.style.display='none'},6000); }
+    else e.style.display='none';
+  }
 }
+window.showLoginWithMessage=showLoginWithMessage;
 
 /* ============================================================
-   OPEN CHAT
+   OPEN CHAT (tracks back-button)
    ============================================================ */
 function openChat(preserveChat){
+  const wasHidden = chatPageEl && chatPageEl.classList.contains('hidden');
   if(homePageEl)hide(homePageEl);
   if(loginPageEl)hide(loginPageEl);
   if(chatPageEl)show(chatPageEl);
+
+  if(wasHidden){
+    npEnterScreen(()=>{
+      hide(chatPageEl);
+      show(homePageEl);
+      renderHomeGrid();
+    });
+  }
 
   const user=localStorage.getItem('loggedInUser')||'guest';
   const lbl=$('chatUserLabel');if(lbl)lbl.textContent='Logged in as '+user;
@@ -1338,7 +1431,7 @@ function renderCatalog(d){
 }
 
 /* ============================================================
-   VIDEOS — LOGIN REQUIRED
+   VIDEOS — LOGIN REQUIRED (tracks back-button)
    ============================================================ */
 async function openVideos(){
   if(!isLoggedIn()){
@@ -1347,16 +1440,24 @@ async function openVideos(){
     showLoginWithMessage('Please login to watch videos');
     return;
   }
-  const m=$('videoModal');if(m)m.classList.add('open');
-  document.body.style.overflow='hidden';
+  const m=$('videoModal');
+  if(m && !m.classList.contains('open')){
+    m.classList.add('open');
+    document.body.style.overflow='hidden';
+    npEnterScreen(()=>{
+      m.classList.remove('open');
+      document.body.style.overflow='auto';
+    });
+  }
   await loadVideos();
   renderVideoGrid();
   markAllVideosSeen();
 }
 window.openVideos=openVideos;
 function closeVideos(){
-  const m=$('videoModal');if(m)m.classList.remove('open');
-  document.body.style.overflow='auto';
+  const m=$('videoModal');
+  if(!m || !m.classList.contains('open')) return;
+  npExitScreen();
 }
 window.closeVideos=closeVideos;
 async function loadVideos(){
@@ -1375,7 +1476,7 @@ function renderVideoGrid(){
     g.innerHTML=`<div class="video-locked-msg">
       <h3>🔒 Login Required</h3>
       <p>Please login to watch our videos</p>
-      <button onclick="closeVideos();showLoginWithMessage('Please login to watch videos')">Login</button>
+      <button onclick="closeVideos();setTimeout(()=>showLoginWithMessage('Please login to watch videos'),80)">Login</button>
     </div>`;
     return;
   }
@@ -1403,11 +1504,10 @@ function renderVideoGrid(){
 }
 async function playVideo(key){
   if(!isLoggedIn()){
-    closeVideos();
     showLoginWithMessage('Please login to watch videos');
     return;
   }
-  closeVideos();
+  // Note: videoModal stays open behind the player (better back-button UX)
   let v=allVideos.find(x=>x.key===key);
   if(!v){
     try{
@@ -1417,7 +1517,16 @@ async function playVideo(key){
     }catch(e){}
   }
   if(!v)return;
-  const p=$('videoPlayerModal');if(p)p.classList.add('open');
+  const p=$('videoPlayerModal');
+  if(p && !p.classList.contains('open')){
+    p.classList.add('open');
+    npEnterScreen(()=>{
+      p.classList.remove('open');
+      const em=$('videoPlayerEmbed');if(em)em.innerHTML='';
+      const vm=$('videoModal');
+      if(!vm || !vm.classList.contains('open')) document.body.style.overflow='auto';
+    });
+  }
   const em=$('videoPlayerEmbed');
   if(em)em.innerHTML=`<video controls autoplay playsinline muted><source src="${esc(v.video_url||'')}" type="video/mp4">Your browser does not support video.</video>`;
   const t=$('videoPlayerTitle');if(t)t.textContent=v.title||'';
@@ -1430,14 +1539,14 @@ async function playVideo(key){
 }
 window.playVideo=playVideo;
 function closeVideoPlayer(){
-  const p=$('videoPlayerModal');if(p)p.classList.remove('open');
-  const em=$('videoPlayerEmbed');if(em)em.innerHTML='';
-  document.body.style.overflow='auto';
+  const p=$('videoPlayerModal');
+  if(!p || !p.classList.contains('open')) return;
+  npExitScreen();
 }
 window.closeVideoPlayer=closeVideoPlayer;
 
 /* ============================================================
-   MOBILE MONEY
+   MOBILE MONEY (tracks back-button)
    ============================================================ */
 function openMM(){
   const items=pendingPayData?pendingPayData.cart:currentCart;
@@ -1454,13 +1563,21 @@ function openMM(){
   const it=$('instrTnm');if(it)it.classList.remove('show');
   const mh=$('mmHint');if(mh)mh.textContent='Enter your mobile money phone number';
   const pb=$('mmPayBtn');if(pb){pb.disabled=false;pb.textContent='Pay Now'}
-  const mm=$('mmModal');if(mm)mm.classList.add('open');
-  document.body.style.overflow='hidden';
+  const mm=$('mmModal');
+  if(mm && !mm.classList.contains('open')){
+    mm.classList.add('open');
+    document.body.style.overflow='hidden';
+    npEnterScreen(()=>{
+      mm.classList.remove('open');
+      document.body.style.overflow='auto';
+    });
+  }
 }
 window.openMM=openMM;
 function closeMM(){
-  const mm=$('mmModal');if(mm)mm.classList.remove('open');
-  document.body.style.overflow='auto';
+  const mm=$('mmModal');
+  if(!mm || !mm.classList.contains('open')) return;
+  npExitScreen();
 }
 window.closeMM=closeMM;
 window.pickProv=pickProv;
@@ -1519,13 +1636,15 @@ async function doPay(){
       const d2=await r2.json();
       if(d2.success){
         closeMM();
-        openChat(true);
-        addBotMsg(`<div class="product-details" style="background:#d4edda;border-left-color:#28a745">
-          <div class="p-name" style="color:#155724">Order Placed!</div>
-          <div><strong>Order ID:</strong> ${esc(d2.order_id||'')}</div>
-          <div><strong>Payment:</strong> ${provName}</div>
-          <div><strong>Total:</strong> ${moneyM(tM)}</div>
-        </div>`);
+        setTimeout(()=>{
+          openChat(true);
+          addBotMsg(`<div class="product-details" style="background:#d4edda;border-left-color:#28a745">
+            <div class="p-name" style="color:#155724">Order Placed!</div>
+            <div><strong>Order ID:</strong> ${esc(d2.order_id||'')}</div>
+            <div><strong>Payment:</strong> ${provName}</div>
+            <div><strong>Total:</strong> ${moneyM(tM)}</div>
+          </div>`);
+        },100);
         incrementOrderBadge();
         currentCart=[];pendingPayData=null;waitingForCheckout=false;orderData={};currentOrderStep=0;updateCartBadges();
         toast('Order Placed','Payment received');
@@ -1599,10 +1718,23 @@ function toggleSpeaker(){
 }
 
 /* ============================================================
-   OVERLAYS
+   OVERLAYS (tracks back-button)
    ============================================================ */
-function openOverlay(id){const o=$(id);if(o)o.classList.add('open');document.body.style.overflow='hidden'}
-function closeOverlay(id){const o=$(id);if(o)o.classList.remove('open');document.body.style.overflow='auto'}
+function openOverlay(id){
+  const o=$(id);
+  if(!o || o.classList.contains('open')) return;
+  o.classList.add('open');
+  document.body.style.overflow='hidden';
+  npEnterScreen(()=>{
+    o.classList.remove('open');
+    document.body.style.overflow='auto';
+  });
+}
+function closeOverlay(id){
+  const o=$(id);
+  if(!o || !o.classList.contains('open')) return;
+  npExitScreen();
+}
 window.closeOverlay=closeOverlay;
 
 function showCategories(){
@@ -1619,7 +1751,7 @@ function showCategories(){
     html+=`<div class="cat-section">
       <div class="cat-title">${esc(cat)} <span class="cat-count">${items.length}</span></div>
       <div class="cat-grid">
-        ${items.slice(0,20).map(p=>`<div class="cat-card" onclick="closeOverlay('catOverlay');openQV('${esc(p.key)}')">
+        ${items.slice(0,20).map(p=>`<div class="cat-card" onclick="openQV('${esc(p.key)}')">
           <img src="${esc(p.image||'https://i.imgur.com/57yg1jO.jpg')}" alt="${esc(p.name)}" loading="lazy">
           <div class="cat-card-name">${esc(p.name)}</div>
         </div>`).join('')}
@@ -1637,7 +1769,7 @@ function showHomePics(){
     return;
   }
   b.innerHTML=`<div class="cat-grid" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr))">
-    ${allProducts.map(p=>`<div class="cat-card" onclick="closeOverlay('homePicOverlay');openQV('${esc(p.key)}')">
+    ${allProducts.map(p=>`<div class="cat-card" onclick="openQV('${esc(p.key)}')">
       <img src="${esc(p.image||'https://i.imgur.com/57yg1jO.jpg')}" alt="${esc(p.name)}" loading="lazy">
       <div class="cat-card-name">${esc(p.name)}</div>
     </div>`).join('')}
@@ -1683,10 +1815,8 @@ document.querySelectorAll('.home-nav-item').forEach(btn=>{
 const accHomeBtn=$('accHome');
 if(accHomeBtn)accHomeBtn.onclick=()=>{
   closeAccBubble();
-  if(chatPageEl&&!chatPageEl.classList.contains('hidden')){
-    hide(chatPageEl);
-    show(homePageEl);
-    renderHomeGrid();
+  if(chatPageEl && !chatPageEl.classList.contains('hidden')){
+    npExitScreen();
     const btn=$('homeLoginBtn');if(btn&&isLoggedIn())btn.textContent='Account';
   } else {
     window.scrollTo({top:0,behavior:'smooth'});
@@ -1728,7 +1858,11 @@ if($('authBtn'))$('authBtn').onclick=async()=>{
         localStorage.setItem('session_id',d.session_id||'');
         if(d.token)localStorage.setItem('jwt_token',d.token);
         if(ok){ok.textContent='Login successful!';ok.style.display='block'}
-        hide(loginPageEl);
+        if(loginPageEl && !loginPageEl.classList.contains('hidden')){
+          npExitScreen();
+        } else {
+          hide(loginPageEl);
+        }
         const btn=$('homeLoginBtn');if(btn)btn.textContent='Account';
         setTimeout(()=>{
           const tk=localStorage.getItem('jwt_token');if(tk)connectSSE(tk);
@@ -1776,7 +1910,8 @@ if($('googleBtn'))$('googleBtn').onclick=()=>{window.location.href=`${API}/api/g
       localStorage.setItem('jwt_token',tk);
       history.replaceState({},document.title,location.pathname);
       setTimeout(()=>{
-        hide(loginPageEl);
+        if(loginPageEl && !loginPageEl.classList.contains('hidden')) npExitScreen();
+        else hide(loginPageEl);
         const btn=$('homeLoginBtn');if(btn)btn.textContent='Account';
         if(pendingOrderKey){const k=pendingOrderKey;pendingOrderKey=null;openChat(true);setTimeout(()=>startOrder(k),400)}
         else if(pendingCartCheckout){pendingCartCheckout=false;openChat(true);setTimeout(()=>showCart(),400)}
@@ -1795,7 +1930,8 @@ function logout(){
   hide(chatPageEl);
   hide(loginPageEl);
   show(homePageEl);
-  const btn=$('homeLoginBtn');if(btn)btn.textContent='Login';
+  /* ==== Change 3 applied here too ==== */
+  const btn=$('homeLoginBtn');if(btn)btn.textContent='Sign in';
   pendingOrderKey=null;pendingCartCheckout=false;currentCart=[];
   updateCartBadges();
   homeToast('Logged out');
@@ -1803,16 +1939,35 @@ function logout(){
 
 if($('backHome'))$('backHome').onclick=()=>{
   pendingOrderKey=null;pendingCartCheckout=false;
-  hide(loginPageEl);
-  show(homePageEl);
+  if(loginPageEl && !loginPageEl.classList.contains('hidden')){
+    npExitScreen();
+  } else {
+    hide(loginPageEl);
+    show(homePageEl);
+  }
 };
 
-if($('forgotLink'))$('forgotLink').onclick=e=>{e.preventDefault();const m=$('forgotModal');if(m)m.classList.add('open')};
+if($('forgotLink'))$('forgotLink').onclick=e=>{
+  e.preventDefault();
+  const m=$('forgotModal');
+  if(m && !m.classList.contains('open')){
+    m.classList.add('open');
+    npEnterScreen(()=>{
+      m.classList.remove('open');
+      document.querySelectorAll('#forgotModal .step').forEach(s=>s.style.display='none');
+      const r1=$('rs1');if(r1)r1.style.display='block';
+    });
+  }
+};
 if($('togglePw'))$('togglePw').onclick=()=>{const i=$('password');i.type=i.type==='password'?'text':'password'};
 if($('toggleRp'))$('toggleRp').onclick=()=>{const i=$('regPassword');i.type=i.type==='password'?'text':'password'};
 if($('toggleCp'))$('toggleCp').onclick=()=>{const i=$('confirmPassword');i.type=i.type==='password'?'text':'password'};
 
-window.closeForgot=()=>{const m=$('forgotModal');if(m)m.classList.remove('open');document.querySelectorAll('#forgotModal .step').forEach(s=>s.style.display='none');const r1=$('rs1');if(r1)r1.style.display='block'};
+window.closeForgot=()=>{
+  const m=$('forgotModal');
+  if(!m || !m.classList.contains('open')) return;
+  npExitScreen();
+};
 window.goBackRs=()=>{document.querySelectorAll('#forgotModal .step').forEach(s=>s.style.display='none');const r1=$('rs1');if(r1)r1.style.display='block'};
 
 if($('sendCodeBtn'))$('sendCodeBtn').onclick=async function(){
@@ -1865,8 +2020,7 @@ if($('homeLoginBtn'))$('homeLoginBtn').onclick=()=>{
     return;
   }
   pendingOrderKey=null;pendingCartCheckout=false;
-  hide(homePageEl);
-  show(loginPageEl);
+  showLoginWithMessage('');
 };
 if($('homeCartBtn'))$('homeCartBtn').onclick=()=>{
   if(!currentCart.length){homeToast('Your cart is empty');return}
@@ -1912,9 +2066,12 @@ if($('micBtn'))$('micBtn').onclick=startMic;
 if($('speakerBtn'))$('speakerBtn').onclick=toggleSpeaker;
 
 if($('chatHomeBtn'))$('chatHomeBtn').onclick=()=>{
-  hide(chatPageEl);
-  show(homePageEl);
-  renderHomeGrid();
+  if(chatPageEl && !chatPageEl.classList.contains('hidden')){
+    npExitScreen();
+  } else {
+    hide(chatPageEl);
+    show(homePageEl);
+  }
 };
 if($('chatMenuBtn'))$('chatMenuBtn').onclick=e=>{e.stopPropagation();toggleAccBubble()};
 
@@ -1986,11 +2143,8 @@ function refreshInstall(){
   const b=$('installBtn');
   if(!b)return;
   if(isStandalone()){ b.style.display='none'; return; }
-  // Chrome / Edge / Samsung / Opera (Android, desktop)
   if(deferredPrompt){ b.style.display='inline-flex'; return; }
-  // iOS Safari — no beforeinstallprompt event; we guide the user manually
   if(isIOS()){ b.style.display='inline-flex'; return; }
-  // macOS Safari — "Add to Dock"
   if(isSafari() && /Mac/.test(navigator.platform)){ b.style.display='inline-flex'; return; }
   b.style.display='none';
 }
@@ -2048,7 +2202,6 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js',{scope:'./'})
       .then(reg=>{
-        // Ask for update check periodically
         try{ reg.update(); }catch(e){}
       })
       .catch(err=>{
@@ -2070,7 +2223,8 @@ window.onload=()=>{
       const btn=$('homeLoginBtn');if(btn)btn.textContent='Account';
       const tk=localStorage.getItem('jwt_token');if(tk)connectSSE(tk);
     } else {
-      const btn=$('homeLoginBtn');if(btn)btn.textContent='Login';
+      /* ==== Change 3 applied on init ==== */
+      const btn=$('homeLoginBtn');if(btn)btn.textContent='Sign in';
     }
     show(homePageEl);
     hide(loginPageEl);
